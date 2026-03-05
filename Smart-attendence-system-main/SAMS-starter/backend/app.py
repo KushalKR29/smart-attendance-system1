@@ -23,13 +23,18 @@ from PIL import Image
 app = Flask(__name__)
 CORS(app)
 
+import os
+
+BASE_DIR = os.path.dirname(__file__)
+FRONTEND_DIR = os.path.join(BASE_DIR, "..", "frontend")
+
 @app.route("/")
 def home():
-    return send_from_directory("../frontend", "login.html")
+    return send_from_directory(FRONTEND_DIR, "login.html")
 
 @app.route("/<path:path>")
 def static_files(path):
-    return send_from_directory("../frontend", path)
+    return send_from_directory(FRONTEND_DIR, path)
 
 # Try to import recognition pipeline
 try:
