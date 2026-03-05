@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Upload Timetable</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-body">
+
+<header class="top-bar">
+  <div class="brand-title">Upload Timetable</div>
+  <button class="pill-btn" onclick="location.href='dashboard.html'">Back</button>
+</header>
+
+<main style="padding:40px;">
+  <h2>Upload CSV File</h2>
+  <input type="file" id="fileInput" accept=".csv">
+
+  <button class="primary-btn" id="uploadBtn">Upload</button>
+
+  <div id="uploadResult" style="margin-top:20px;font-size:18px;"></div>
+</main>
+
+<script>
+const API="http://localhost:5000";
+
+document.getElementById("uploadBtn").onclick = async () => {
+    const file = document.getElementById("fileInput").files[0];
+    if(!file) return alert("Select CSV first");
+
+    let fd = new FormData();
+    fd.append("file", file);
+
+    const res = await fetch(`${API}/api/upload_timetable`,{
+        method:"POST",
+        body:fd
+    });
+
+    const d = await res.json();
+const count = d.created_periods ?? d.uploaded ?? 0;
+
+document.getElementById("uploadResult").innerHTML =
+  `<span style="color:#9b6bff;">Uploaded <b>${count}</b> entries successfully</span>
+   <br><small style="color:#ccc;">Raw response: ${JSON.stringify(d)}</small>`;
+
+};
+</script>
+</body>
+</html>

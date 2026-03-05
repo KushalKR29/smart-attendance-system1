@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Teacher Login - Smart Attendance</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="login-body">
+  <div class="login-card">
+    <h2 class="login-title">Smart Attendance</h2>
+    <p class="login-subtitle">Teacher Portal — Sign in</p>
+
+    <div class="demo-box">
+      <b class="purple">Demo Credentials:</b><br>
+      <b class="purple">Username: <span class="purple">teacher1</span></b><br>
+      <b class="purple">Password: <span class="teal">pass</span></b>
+    </div>
+
+    <div class="input-group">
+      <input type="text" id="username" placeholder="Username">
+    </div>
+
+    <div class="input-group">
+      <input type="password" id="password" placeholder="Password">
+    </div>
+
+   <button type="button" class="btn" onclick="loginTeacher()">Sign In</button>
+
+    <p id="login-error" class="error"></p>
+  </div>
+
+  <script src="login.js"></script>
+</body>
+</html>

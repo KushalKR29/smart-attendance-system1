@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>SAMS — Live Attendance</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="dark-body">
+
+  <header class="top-bar">
+    <div>
+      <div class="brand-title">Live Attendance</div>
+      <div class="brand-sub" id="liveClassLabel">Class —</div>
+    </div>
+    <button id="stopBtn" class="pill-btn danger">Stop Attendance</button>
+  </header>
+
+  <main class="live-layout">
+    <!-- Camera Feed -->
+    <section class="card camera-card">
+      <div class="card-header-row">
+        <h2>Camera Feed</h2>
+        <span class="badge-live" id="liveIndicator">LIVE</span>
+      </div>
+      <div class="camera-wrapper">
+        <video id="liveVideo" autoplay muted playsinline></video>
+        <div id="cameraOverlay" class="camera-overlay">Scanning for faces...</div>
+      </div>
+    </section>
+
+    <!-- Recognized Students -->
+    <section class="card recognized-card">
+      <div class="card-header-row">
+        <h2>Recognized Students</h2>
+        <span class="badge-count" id="recognizedCount">0 detected</span>
+      </div>
+      <div id="recognizedList" class="recognized-list">
+        <!-- items filled by JS -->
+      </div>
+    </section>
+  </main>
+
+  <script src="live.js"></script>
+</body>
+</html>

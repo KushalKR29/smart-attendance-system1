@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Enroll Student</title>
+    <link rel="stylesheet" href="enroll.css" />
+</head>
+
+<body>
+
+    <nav class="top-nav">
+        <a href="dashboard.html" class="back-btn">← Back to Dashboard</a>
+    </nav>
+
+    <div class="container">
+
+        <h1>Enroll New Student</h1>
+        <p class="subtitle">Capture student's face and enter their details</p>
+
+        <div class="enroll-grid">
+
+            <!-- CAMERA BOX -->
+            <div class="camera-box">
+                <div class="placeholder" id="cameraPlaceholder">
+                    <img src="assets/icons/camera_ic.svg" width="60" />
+                    <p>Start Camera</p>
+                </div>
+                <video id="video" autoplay></video>
+                <button id="startCam" class="primary-btn">Start Camera</button>
+            </div>
+
+            <!-- FORM -->
+            <div class="form-box">
+                <label>Student ID</label>
+                <input id="sid" type="text" placeholder="e.g., u020" />
+
+                <label>Full Name</label>
+                <input id="sname" type="text" placeholder="e.g., John Doe" />
+
+                <label>Email</label>
+                <input id="email" type="text" placeholder="e.g., john@example.com" />
+
+                <button id="enrollBtn" class="primary-btn full">Enroll Student</button>
+            </div>
+
+        </div>
+
+        <p id="status" class="status"></p>
+
+
+    </div>
+
+    <script src="enroll.js"></script>
+</body>
+</html>

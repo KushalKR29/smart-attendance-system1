@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SAMS — Smart Attendance Demo</title>
+  <link rel="stylesheet" href="style.css">
+
+  
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@600;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg1: #0f1724;
+      --bg2: #071028;
+      --card: rgba(255,255,255,0.06);
+      --glass: rgba(255,255,255,0.06);
+      --accent: linear-gradient(135deg,#7f5af0 0%, #1dd3b0 100%);
+      --muted: #9aa4b2;
+      --success: #21c07a;
+      --danger: #ff6b6b;
+    }
+
+    html,body{
+      height:100%;
+      margin:0;
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      color: #e6eef8;
+      background: radial-gradient(1000px 500px at 10% 10%, rgba(34,50,80,0.35), transparent),
+                  radial-gradient(800px 400px at 85% 90%, rgba(17,45,62,0.25), transparent),
+                  linear-gradient(180deg, var(--bg1), var(--bg2));
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+
+    
+    body::before{
+      content:"";
+      position:fixed; inset:0; pointer-events:none; z-index:0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Crect fill='none' width='80' height='80'/%3E%3Cpath d='M0 0 L80 0 L80 80' stroke='%231b2430' stroke-opacity='0.03' stroke-width='1'/%3E%3C/svg%3E");
+      opacity:0.9;
+      mix-blend-mode:overlay;
+    }
+
+    .container{
+      max-width:1180px;
+      margin:32px auto;
+      padding:28px;
+      display:grid;
+      grid-template-columns: 1fr 380px;
+      gap:24px;
+      align-items:start;
+      position:relative;
+      z-index:1;
+    }
+
+    header{
+      grid-column:1/-1;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      margin-bottom:6px;
+    }
+
+    .brand{
+      display:flex;
+      gap:12px;
+      align-items:center;
+    }
+    .logo{
+      width:56px; height:56px; border-radius:12px;
+      background: linear-gradient(135deg,#ff8a65,#7f5af0 50%, #1dd3b0);
+      box-shadow: 0 8px 30px rgba(31,41,55,0.45), inset 0 -6px 18px rgba(0,0,0,0.2);
+      display:flex; align-items:center; justify-content:center;
+      font-weight:800; font-family:"Poppins"; color:white;
+    }
+    h1{ font-family:"Poppins"; margin:0; font-size:20px; letter-spacing:0.3px; font-weight:700; color:#fff; }
+
+    .sub{ color:var(--muted); font-size:13px; margin-top:2px; }
+
+    /* LEFT: main card */
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+      border-radius:16px;
+      padding:18px;
+      box-shadow: 0 10px 30px rgba(2,8,23,0.5);
+      border: 1px solid rgba(255,255,255,0.03);
+    }
+
+    .video-wrap{
+      width:100%;
+      aspect-ratio: 4/3;
+      background: linear-gradient(180deg,#0a0f17,#0d141c);
+      border-radius:12px;
+      overflow:hidden;
+      display:flex; align-items:center; justify-content:center;
+      position:relative;
+      border: 1px solid rgba(255,255,255,0.03);
+    }
+
+    video{
+      width:100%; height:100%; object-fit:cover; display:block;
+      background:#081018;
+    }
+
+    .controls{
+      display:flex; gap:10px; margin-top:12px; align-items:center;
+    }
+
+    input[type="text"]{
+      background: rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.04);
+      padding:10px 12px; border-radius:8px; color:#eaf6ff; outline:none; min-width:160px;
+    }
+
+    .btn{
+      background: linear-gradient(90deg,#7f5af0,#1dd3b0); color:white; border:none; padding:10px 14px; border-radius:10px;
+      cursor:pointer; font-weight:600; box-shadow: 0 6px 18px rgba(31,41,55,0.35);
+    }
+    .btn.secondary{
+      background:transparent; border:1px solid rgba(255,255,255,0.06); color:#bcd7ee;
+    }
+    .btn:disabled{ opacity:0.45; pointer-events:none; filter:grayscale(0.2) contrast(.9); }
+
+    .status{
+      margin-top:10px; color:var(--muted); font-size:14px;
+    }
+
+    /* RIGHT: sidebar */
+    .sidebar{
+      display:flex; flex-direction:column; gap:16px;
+    }
+
+    .card.small{
+      padding:14px;
+      display:flex; flex-direction:column; gap:10px;
+      align-items:center;
+    }
+
+    .progress-ring{
+      width:120px; height:120px; position:relative;
+    }
+    .progress-center{
+      position:absolute; inset:0; display:flex; align-items:center; justify-content:center; flex-direction:column;
+    }
+    .pct{ font-weight:700; font-size:20px; color:#eaf6ff; }
+    .label{ color:var(--muted); font-size:12px; }
+
+    .history{
+      width:100%; max-height:220px; overflow:auto; border-radius:8px; padding:8px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    }
+    .hist-item{ display:flex; justify-content:space-between; gap:10px; padding:8px 6px; border-bottom:1px dashed rgba(255,255,255,0.02); color:#cfe8ff; font-size:13px; }
+    .hist-item small{ color:var(--muted); font-size:12px; }
+
+    footer{ grid-column:1/-1; color:var(--muted); font-size:13px; margin-top:10px; }
+
+    /* responsive */
+    @media (max-width:980px){
+      .container{ grid-template-columns: 1fr; padding:16px; }
+      .sidebar{ order:2; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="logo">S</div>
+        <div>
+          <h1>SAMS — Smart Attendance</h1>
+          <div class="sub">Facial recognition demo • student dashboard</div>
+        </div>
+      </div>
+
+      <div style="text-align:right">
+        <div style="font-weight:600">Connected</div>
+        <div class="sub">Local demo • no cloud</div>
+      </div>
+    </header>
+
+    <!-- Left column -->
+    <main class="card">
+      <div class="video-wrap" id="videoWrap">
+        <video id="video" autoplay muted playsinline></video>
+        <div class="grid-overlay"></div>  
+        <div class="face-guide"></div> 
+      </div>
+
+      <div class="controls" style="align-items:center;">
+        <input id="studentId" type="text" placeholder="Student ID (e.g. u010)" />
+        <input id="studentName" type="text" placeholder="Name (optional)" />
+        <button id="enrollBtn" class="btn secondary">Enroll (capture)</button>
+        <button id="enrollMultiBtn" class="btn">Enroll 3x</button>
+        <button id="recognizeBtn" class="btn secondary">Recognize</button>
+      </div>
+
+      <div class="status">
+        Status: <span id="state">initializing...</span>
+      </div>
+
+      <div style="margin-top:12px;">
+        <pre id="log" style="background:rgba(255,255,255,0.02); padding:10px; border-radius:8px; color:#dff3ff; max-height:160px; overflow:auto;"></pre>
+      </div>
+    </main>
+
+    <!-- Right column -->
+    <aside class="sidebar">
+      <div class="card small">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div class="progress-ring" id="ringWrap">
+            
+          </div>
+          <div style="text-align:left">
+            <div style="font-size:14px; font-weight:700">Attendance</div>
+            <div class="label">This term</div>
+          </div>
+        </div>
+        <div style="width:100%; display:flex; justify-content:center; margin-top:6px;">
+          <button id="refreshAttendance" class="btn secondary" style="padding:8px 10px">Refresh</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div style="font-weight:700">History</div>
+          <div class="label">Recent scans</div>
+        </div>
+        <div class="history" id="historyList">
+          <div style="padding:12px; color:var(--muted)">No attendance yet — enroll & recognize to see entries.</div>
+        </div>
+      </div>
+    </aside>
+
+    <footer>
+      Tip: use the <strong>Enroll 3x</strong> button for robust enrollment. Demo uses local embeddings — get real accuracy by installing the face_recognition model.
+    </footer>
+  </div>
+
+  <script>
+  
+  const stateEl = document.getElementById('state');
+  const logEl = document.getElementById('log');
+  const ringWrap = document.getElementById('ringWrap');
+  const historyList = document.getElementById('historyList');
+
+  function setState(s){ stateEl.innerText = s; logMsg('STATE:', s); }
+  function logMsg(...args){
+    console.log(...args);
+    const line = document.createElement('div');
+    line.textContent = (new Date().toLocaleTimeString()) + ' • ' + args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' ');
+    logEl.prepend(line);
+    while(logEl.childElementCount > 60) logEl.removeChild(logEl.lastChild);
+  }
+
+  function makeRing(pct=0){
+    ringWrap.innerHTML = '';
+    const size=120, stroke=12;
+    const radius = (size - stroke)/2;
+    const c = document.createElementNS('http://www.w3.org/2000/svg','svg');
+    c.setAttribute('width', size);
+    c.setAttribute('height', size);
+    const bg = document.createElementNS(c.namespaceURI,'circle');
+    bg.setAttribute('cx',size/2); bg.setAttribute('cy',size/2); bg.setAttribute('r', radius);
+    bg.setAttribute('stroke', 'rgba(255,255,255,0.06)');
+    bg.setAttribute('stroke-width', stroke);
+    bg.setAttribute('fill','none');
+    c.appendChild(bg);
+    const fg = document.createElementNS(c.namespaceURI,'circle');
+    fg.setAttribute('cx',size/2); fg.setAttribute('cy',size/2); fg.setAttribute('r', radius);
+    fg.setAttribute('stroke-linecap','round');
+    fg.setAttribute('stroke-width', stroke);
+    fg.setAttribute('fill','none');
+    fg.setAttribute('stroke', 'url(#grad)');
+    fg.setAttribute('transform', `rotate(-90 ${size/2} ${size/2})`);
+    // gradient
+    const defs = document.createElementNS(c.namespaceURI,'defs');
+    const lg = document.createElementNS(c.namespaceURI,'linearGradient');
+    lg.setAttribute('id','grad'); lg.setAttribute('x1','0%'); lg.setAttribute('y1','0%'); lg.setAttribute('x2','100%'); lg.setAttribute('y2','100%');
+    const stop1 = document.createElementNS(c.namespaceURI,'stop'); stop1.setAttribute('offset','0%'); stop1.setAttribute('stop-color','#7f5af0');
+    const stop2 = document.createElementNS(c.namespaceURI,'stop'); stop2.setAttribute('offset','100%'); stop2.setAttribute('stop-color','#1dd3b0');
+    lg.appendChild(stop1); lg.appendChild(stop2); defs.appendChild(lg); c.appendChild(defs);
+    c.appendChild(fg);
+    // circumference
+    const circ = 2 * Math.PI * radius;
+    fg.setAttribute('stroke-dasharray', circ);
+    const dash = circ * Math.max(0, Math.min(1, pct/100));
+    fg.setAttribute('stroke-dashoffset', circ - dash);
+    // append center text
+    const wrapper = document.createElement('div');
+    wrapper.style.position='relative';
+    wrapper.style.width = size + 'px';
+    wrapper.style.height = size + 'px';
+    wrapper.appendChild(c);
+    const center = document.createElement('div');
+    center.className='progress-center';
+    center.style.position='absolute'; center.style.inset='0'; center.style.display='flex'; center.style.alignItems='center'; center.style.justifyContent='center'; center.style.flexDirection='column';
+    const pctEl = document.createElement('div'); pctEl.className='pct'; pctEl.textContent = Math.round(pct) + '%';
+    const lbl = document.createElement('div'); lbl.className='label'; lbl.textContent = 'Present';
+    center.appendChild(pctEl); center.appendChild(lbl); wrapper.appendChild(center);
+    ringWrap.appendChild(wrapper);
+  }
+
+  // ---------- webcam + fetch helpers (same endpoints as backend) ----------
+  const video = document.getElementById('video');
+  const enrollBtn = document.getElementById('enrollBtn');
+  const enrollMultiBtn = document.getElementById('enrollMultiBtn');
+  const recognizeBtn = document.getElementById('recognizeBtn');
+  const studentIdInput = document.getElementById('studentId');
+  const studentNameInput = document.getElementById('studentName');
+  const refreshAttendance = document.getElementById('refreshAttendance');
+
+  // enable/disable UI quickly
+  function setButtonsEnabled(enabled){
+    [enrollBtn, enrollMultiBtn, recognizeBtn].forEach(b => b.disabled = !enabled);
+  }
+
+  async function initCamera(){
+    setState('requesting camera...');
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 960, height: 720 }, audio:false });
+      video.srcObject = stream;
+      video.muted = true;
+      try { await video.play(); } catch(e){ console.warn('video play failed', e); }
+      // wait a bit for readyState
+      if (video.readyState < 2) {
+        await new Promise(r => video.addEventListener('playing', r, { once:true }));
+      }
+      setState('camera ready');
+      setButtonsEnabled(true);
+      makeRing(0);
+    } catch (e) {
+      setState('camera error');
+      logMsg('camera error', e);
+      setButtonsEnabled(false);
+      alert('Camera access failed: ' + (e.message || e.name));
+    }
+  }
+
+  function captureBlob(){
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth || 640;
+    canvas.height = video.videoHeight || 480;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    return new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.9));
+  }
+
+  async function postFormData(url, fd){
+    try {
+      const res = await fetch(url, { method:'POST', body: fd });
+      const text = await res.text();
+      try { return { ok:res.ok, status:res.status, body: JSON.parse(text) }; }
+      catch(e){ return { ok:res.ok, status:res.status, body: { raw: text } }; }
+    } catch (err){
+      return { ok:false, error: String(err) };
+    }
+  }
+
+  // single enroll (existing)
+  enrollBtn.addEventListener('click', async ()=>{
+    const student_id = studentIdInput.value.trim();
+    const name = studentNameInput.value.trim();
+    if (!student_id) { alert('Enter student ID'); return; }
+    enrollBtn.disabled = true; setState('capturing image...');
+    const blob = await captureBlob();
+    const fd = new FormData(); fd.append('student_id', student_id); fd.append('name', name); fd.append('image', blob, 'capture.jpg');
+    const r = await postFormData('http://localhost:5000/api/enroll', fd);
+    setState('response ' + (r.status || 'error'));
+    logMsg({ endpoint:'/api/enroll', result: r });
+    enrollBtn.disabled = false;
+    // refresh attendance 
+    refreshAttendanceFunc();
+  });
+
+  // enroll 
+  enrollMultiBtn.addEventListener('click', async ()=>{
+    const student_id = studentIdInput.value.trim();
+    const name = studentNameInput.value.trim();
+    if (!student_id) { alert('Enter student ID'); return; }
+    enrollMultiBtn.disabled = true; setState('capturing 3 frames...');
+    const blobs = [];
+    for (let i=0;i<3;i++){
+      const b = await captureBlob();
+      blobs.push(b);
+      if (i < 2) await new Promise(r=>setTimeout(r, 550));
+    }
+    const fd = new FormData(); fd.append('student_id', student_id); fd.append('name', name);
+    blobs.forEach((b,i)=> fd.append('images', b, `capture_${i+1}.jpg`));
+    setState('uploading...');
+    const r = await postFormData('http://localhost:5000/api/enroll_multi', fd);
+    setState('response ' + (r.status || 'error'));
+    logMsg({ endpoint:'/api/enroll_multi', result: r });
+    enrollMultiBtn.disabled = false;
+    refreshAttendanceFunc();
+  });
+
+  // recognize
+  recognizeBtn.addEventListener('click', async ()=>{
+    recognizeBtn.disabled = true; setState('capturing for recognize...');
+    const blob = await captureBlob();
+    const fd = new FormData(); fd.append('image', blob, 'cap.jpg');
+    const r = await postFormData('http://localhost:5000/api/recognize', fd);
+    setState('response ' + (r.status || 'error'));
+    logMsg({ endpoint:'/api/recognize', result: r });
+    recognizeBtn.disabled = false;
+    // if match -> update attendance immediately
+    if (r.ok && r.body && r.body.matches && r.body.matches.length){
+      refreshAttendanceFunc();
+    }
+  });
+
+  // attendance fetch & UI refresh
+  async function refreshAttendanceFunc(){
+    const sid = studentIdInput.value.trim();
+    if (!sid) return;
+    setState('loading attendance...');
+    try {
+      const res = await fetch(`http://localhost:5000/api/attendance/${encodeURIComponent(sid)}`);
+      const j = await res.json();
+      // build history list
+      historyList.innerHTML = '';
+      if (!j.history || j.history.length === 0){
+        historyList.innerHTML = `<div style="padding:12px;color:var(--muted)">No attendance for ${sid} yet.</div>`;
+        makeRing(0);
+        setState('attendance updated');
+        return;
+      }
+      // show up to 30 most recent
+      j.history.slice(0,30).forEach(rec => {
+        const d = document.createElement('div'); d.className='hist-item';
+        const left = document.createElement('div'); left.textContent = new Date(rec.timestamp).toLocaleString();
+        const right = document.createElement('div'); right.textContent = rec.source || 'camera';
+        d.appendChild(left); d.appendChild(right);
+        historyList.appendChild(d);
+      });
+      // compute percent attendance sample
+      const pct = Math.min(100, Math.round((j.history.length / 30) * 100));
+      makeRing(pct);
+      setState('attendance loaded');
+    } catch (e){
+      logMsg('attendance fetch error', e);
+      setState('attendance error');
+    }
+  }
+
+  refreshAttendance.addEventListener('click', refreshAttendanceFunc);
+
+  // init on load
+  setButtonsEnabled(false);
+  makeRing(0);
+  initCamera();
+
+  // allow pressing Enter on studentId to refresh attendance quickly
+  studentIdInput.addEventListener('keydown', (e)=>{ if (e.key === 'Enter') refreshAttendanceFunc(); });
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>SAMS — Teacher Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="dark-body">
+  <header class="top-bar">
+    <div class="brand">
+      <div class="logo-circle">🎓</div>
+      <div>
+        <div class="brand-title">Smart Attendance</div>
+        <div class="brand-sub">Teacher Dashboard</div>
+      </div>
+    </div>
+
+    <div class="top-actions">
+      <button class="pill-btn secondary" id="enrollNavBtn">Enroll Student</button>
+      <button class="pill-btn secondary" onclick="location.href='timetable_upload.html'">
+        Upload Timetable</button>
+      <button class="pill-btn ghost" id="logoutBtn">Logout</button>
+
+    </div>
+  </header>
+
+  <!-- Camera status bar -->
+  <section class="status-bar" id="cameraStatusBar">
+    <div class="status-icon">📷</div>
+    <div class="status-text" id="cameraStatusText">Attendance Not Started</div>
+  </section>
+
+  <!-- Current / Next period -->
+  <main class="main-layout">
+
+    <section class="cards-row">
+      <!-- Current Period -->
+      <article class="card period-card" id="currentPeriodCard">
+        <div class="card-header-text">Current Period</div>
+        <div class="period-detail">
+          <span class="label">Class</span>
+          <span class="value" id="currentClassName">—</span>
+        </div>
+        <div class="period-detail">
+          <span class="label">Time</span>
+          <span class="value" id="currentTime">—</span>
+        </div>
+        <div class="period-detail">
+          <span class="label">Room</span>
+          <span class="value" id="currentRoom">—</span>
+        </div>
+        <button id="takeAttendanceBtn" class="primary-btn full-width" disabled>
+          Take Attendance
+        </button>
+      </article>
+
+      <!-- Next Period -->
+      <article class="card period-card">
+        <div class="card-header-text">Next Period</div>
+        <div class="period-detail">
+          <span class="label">Class</span>
+          <span class="value" id="nextClassName">—</span>
+        </div>
+        <div class="period-detail">
+          <span class="label">Time</span>
+          <span class="value" id="nextTime">—</span>
+        </div>
+        <div class="period-detail">
+          <span class="label">Room</span>
+          <span class="value" id="nextRoom">—</span>
+        </div>
+        <button class="ghost-btn full-width" id="nextDetailsBtn" disabled>
+          View Details
+        </button>
+      </article>
+    </section>
+
+    <!-- Class Attendance Summary -->
+    <section class="card summary-card">
+      <div class="summary-header">
+        <h2>Class Attendance Summary</h2>
+        <div class="summary-controls">
+          <span id="totalClassesLabel">Total classes held: 0</span>
+          <select id="classSelect" class="select-input">
+            <option value="">Select class</option>
+          </select>
+        </div>
+      </div>
+
+      <table class="summary-table">
+        <thead>
+          <tr>
+            <th>Student</th>
+            <th>Classes Attended</th>
+            <th>Total Classes</th>
+            <th>Percentage</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="attendanceBody">
+          
+        </tbody>
+      </table>
+    </section>
+
+  </main>
+
+  <!-- Toast for count after stop -->
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="teacher.js"></script>
+</body>
+</html>

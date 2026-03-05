@@ -1,0 +1,102 @@
+body {
+    font-family: Inter, sans-serif;
+    margin: 0;
+    background: #f7f7ff;
+}
+
+.top-nav {
+    padding: 20px;
+}
+
+.back-btn {
+    text-decoration: none;
+    color: #6b6bff;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 20px auto;
+}
+
+h1 {
+    font-size: 32px;
+}
+
+.subtitle {
+    margin-top: -10px;
+    color: #777;
+}
+
+.enroll-grid {
+    margin-top: 30px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+.camera-box {
+    background: #fff;
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    min-height: 350px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+.placeholder {
+    padding-top: 40px;
+    color: #999;
+}
+
+#video {
+    width: 100%;
+    display: none;
+    border-radius: 12px;
+}
+
+.form-box {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+input {
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}
+
+.primary-btn {
+    margin-top: 10px;
+    padding: 12px 20px;
+    background: #8d6bff;
+    border-radius: 8px;
+    border: none;
+    font-size: 16px;
+    color: #fff;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.primary-btn:hover {
+    background: #7e5cfb;
+}
+
+.full {
+    width: 100%;
+}
+
+.status {
+    margin-top: 20px;
+    font-size: 18px;
+    color: #333;
+}
+.status.success {
+    color: #28c76f;
+}
+.status.error {
+    color: #ff6b6b;
+}
